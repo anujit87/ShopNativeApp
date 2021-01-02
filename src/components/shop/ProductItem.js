@@ -10,6 +10,7 @@ import {
   Button,
 } from "react-native";
 import Colors from "../../config/Colors";
+import Card from "../UI/Card";
 
 const ProductItem = ({ product, onSelect, children }) => {
   let TouchableComponent = TouchableOpacity;
@@ -17,42 +18,33 @@ const ProductItem = ({ product, onSelect, children }) => {
     TouchableComponent = TouchableNativeFeedback;
   }
   return (
-    <View style={styles.product}>
+    <Card style={styles.product}>
       <View style={styles.touchable}>
-    <TouchableComponent onPress={onSelect} useForeground>
-      <View>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: product.imageUrl }} style={styles.image} />
-        </View>
-        <View style={styles.details}>
-          <Text style={styles.title}>{product.title}</Text>
-          <Text style={styles.price}>$ {product.price.toFixed(2)}</Text>
-        </View>
-        <View style={styles.actions}>
-          {children}
-        </View>
+        <TouchableComponent onPress={onSelect} useForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: product.imageUrl }} style={styles.image} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.title}>{product.title}</Text>
+              <Text style={styles.price}>$ {product.price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.actions}>{children}</View>
+          </View>
+        </TouchableComponent>
       </View>
-    </TouchableComponent>
-      </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   product: {
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    borderRadius: 10,
-    elevation: 5,
-    backgroundColor: "white",
     height: 300,
     margin: 20,
   },
   touchable: {
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: "hidden",
   },
   image: {
     height: "100%",
@@ -67,12 +59,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 2,
     color: Colors.dark,
-    fontFamily: 'open-sans-bold'
+    fontFamily: "open-sans-bold",
   },
   price: {
     fontSize: 14,
     color: Colors.danger,
-    fontFamily: 'open-sans'
+    fontFamily: "open-sans",
   },
   actions: {
     flexDirection: "row",
