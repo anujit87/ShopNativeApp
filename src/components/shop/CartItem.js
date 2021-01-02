@@ -11,15 +11,17 @@ import Colors from "../../config/Colors";
 import { useDispatch } from "react-redux";
 import { updateQuantity } from "../../store/actions/cart";
 
-const CartItem = ({ onRemove, item }) => {
+const CartItem = ({ onRemove, item, deletable }) => {
   const { quantity, productTitle, sum, productId } = item;
   const dispatch = useDispatch();
   return (
     <View style={styles.cartItem}>
       <View style={styles.itemData}>
+        {!deletable && (<Text style={styles.quantity}>{quantity}</Text>)}
         <Text style={styles.mainText}>{productTitle} </Text>
         <Text style={styles.mainText}>$ {sum.toFixed(2)}</Text>
       </View>
+      {deletable && (
       <View style={{ ...styles.itemData, marginTop: 10 }}>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => dispatch(updateQuantity(productId, 'DECREASE'))} >
@@ -46,6 +48,7 @@ const CartItem = ({ onRemove, item }) => {
           />
         </TouchableOpacity>
       </View>
+      )}
     </View>
   );
 };

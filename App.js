@@ -1,23 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Provider } from 'react-redux';
-import AppLoading from 'expo-app-loading';
-import { combineReducers, createStore } from 'redux';
-import * as Font from 'expo-font';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Provider } from "react-redux";
+import AppLoading from "expo-app-loading";
+import { combineReducers, createStore } from "redux";
+import * as Font from "expo-font";
 
-import ShopNavigator from './src/navigations/ShopNavigator';
-import productsReducer from './src/store/reducers/products';
-import cartReducer from './src/store/reducers/cart';
+import ShopNavigator from "./src/navigations/ShopNavigator";
+import productsReducer from "./src/store/reducers/products";
+import cartReducer from "./src/store/reducers/cart";
+import ordersReducer from "./src/store/reducers/orders";
 
 const fetchFonts = () => {
   return Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
-}
+};
 
-const rootReducer = combineReducers({ products: productsReducer, cart: cartReducer });
+const rootReducer = combineReducers({
+  products: productsReducer,
+  cart: cartReducer,
+  orders: ordersReducer,
+});
 const store = createStore(rootReducer);
 
 export default function App() {
@@ -37,4 +42,3 @@ export default function App() {
     </Provider>
   );
 }
-
