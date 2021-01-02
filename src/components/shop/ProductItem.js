@@ -17,8 +17,10 @@ const ProductItem = ({ product, onViewDetails, onAddToCart }) => {
     TouchableComponent = TouchableNativeFeedback;
   }
   return (
-    <TouchableComponent>
-      <View style={styles.product}>
+    <View style={styles.product}>
+      <View style={styles.touchable}>
+    <TouchableComponent onPress={onViewDetails} useForeground>
+      <View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: product.imageUrl }} style={styles.image} />
         </View>
@@ -40,6 +42,8 @@ const ProductItem = ({ product, onViewDetails, onAddToCart }) => {
         </View>
       </View>
     </TouchableComponent>
+      </View>
+    </View>
   );
 };
 
@@ -54,7 +58,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 300,
     margin: 20,
-    justifyContent: 'space-between'
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   image: {
     height: "100%",
@@ -67,12 +74,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2,
     color: Colors.dark,
+    fontFamily: 'open-sans-bold'
   },
   price: {
     fontSize: 14,
     color: Colors.danger,
+    fontFamily: 'open-sans'
   },
   actions: {
     flexDirection: "row",
