@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Colors from "../../config/Colors";
 
-const ProductItem = ({ product, onViewDetails, onAddToCart }) => {
+const ProductItem = ({ product, onSelect, children }) => {
   let TouchableComponent = TouchableOpacity;
   if (Platform.OS === "android" && Platform.Version >= 21) {
     TouchableComponent = TouchableNativeFeedback;
@@ -19,7 +19,7 @@ const ProductItem = ({ product, onViewDetails, onAddToCart }) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-    <TouchableComponent onPress={onViewDetails} useForeground>
+    <TouchableComponent onPress={onSelect} useForeground>
       <View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: product.imageUrl }} style={styles.image} />
@@ -29,16 +29,7 @@ const ProductItem = ({ product, onViewDetails, onAddToCart }) => {
           <Text style={styles.price}>$ {product.price.toFixed(2)}</Text>
         </View>
         <View style={styles.actions}>
-          <Button
-            color={Colors.primary}
-            title="View Details"
-            onPress={onViewDetails}
-          />
-          <Button
-            color={Colors.primary}
-            title="Add to cart"
-            onPress={onAddToCart}
-          />
+          {children}
         </View>
       </View>
     </TouchableComponent>
@@ -69,7 +60,7 @@ const styles = StyleSheet.create({
   },
   details: {
     alignItems: "center",
-    height: "15%",
+    height: "17%",
     padding: 10,
   },
   title: {
@@ -87,7 +78,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    height: "25%",
+    height: "23%",
     paddingHorizontal: 20,
   },
   imageContainer: {
