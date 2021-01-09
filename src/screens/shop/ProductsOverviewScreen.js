@@ -17,32 +17,34 @@ import { fetchProducts } from "../../store/actions/products";
 
 const ProductsOverviewScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
   const loadProducts = useCallback(
-    (_) => {
+    async (_) => {
       setError(null);
-      setIsLoading(true);
-      dispatch(
+      setIsRefreshing(true);
+      await dispatch(
         fetchProducts(
-          () => setIsLoading(false),
+          () => setIsRefreshing(false),
           (err) => {
-            setIsLoading(false);
+            setIsRefreshing(false);
             setError(err.message);
           }
         )
       );
     },
-    [dispatch, setIsLoading, setError]
+    [dispatch, setIsRefreshing, setError]
   );
   useEffect(() => {
     const willFocusSub = navigation.addListener('willFocus', loadProducts);
     return () => willFocusSub.remove();
   }, [loadProducts]);
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    setIsLoading(true)
+    loadProducts().then(() => setIsLoading(false));
+  }, [loadProducts, setIsLoading]);
   const selectItemHandler = (id, title) =>
     navigation.navigate({
       routeName: "ProductDetail",
@@ -72,6 +74,8 @@ const ProductsOverviewScreen = ({ navigation }) => {
   }
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       renderItem={({ item }) => (
         <ProductItem
