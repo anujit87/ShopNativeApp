@@ -5,11 +5,11 @@ import { combineReducers, createStore, applyMiddleware } from "redux";
 import * as Font from "expo-font";
 import ReduxThunk from "redux-thunk";
 
-import ShopNavigator from "./src/navigations/ShopNavigator";
 import productsReducer from "./src/store/reducers/products";
 import cartReducer from "./src/store/reducers/cart";
 import ordersReducer from "./src/store/reducers/orders";
 import authReducer from "./src/store/reducers/auth";
+import NavigationContainer from "./src/navigations/NavigationContainer";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -39,7 +39,7 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }

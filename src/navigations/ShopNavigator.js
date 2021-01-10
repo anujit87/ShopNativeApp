@@ -1,7 +1,10 @@
-import React from 'react';
-import { Platform } from "react-native";
+import React from "react";
+import { Button, Platform, SafeAreaView, View } from "react-native";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { createDrawerNavigator } from "react-navigation-drawer";
+import {
+  createDrawerNavigator,
+  DrawerNavigatorItems,
+} from "react-navigation-drawer";
 import { createStackNavigator } from "react-navigation-stack";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../config/Colors";
@@ -10,9 +13,12 @@ import CartScreen from "../screens/shop/CartScreen";
 import OrdersScreen from "../screens/shop/OrdersScreen";
 import ProductDetailsScreen from "../screens/shop/ProductDetailsScreen";
 import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
-import UserProductsScreen from '../screens/user/UserProductsScreen';
-import EditProductScreen from '../screens/user/EditProductScreen';
-import AuthScreen from '../screens/user/AuthScreen';
+import UserProductsScreen from "../screens/user/UserProductsScreen";
+import EditProductScreen from "../screens/user/EditProductScreen";
+import AuthScreen from "../screens/user/AuthScreen";
+import StartupScreen from "../screens/StartupScreen";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/actions/auth";
 
 const defaultNavOptions = {
   headerStyle: {
@@ -77,7 +83,7 @@ const OrdersNavigator = createStackNavigator(
 const AdminNavigator = createStackNavigator(
   {
     UserProducts: UserProductsScreen,
-    EditProduct: EditProductScreen
+    EditProduct: EditProductScreen,
   },
   {
     navigationOptions: {
@@ -97,24 +103,46 @@ const ShopNavigator = createDrawerNavigator(
   {
     Products: ProductsNavigator,
     Orders: OrdersNavigator,
-    Admin: AdminNavigator
+    Admin: AdminNavigator,
   },
   {
     contentOptions: {
       activeTintColor: Colors.primary,
     },
+    contentComponent: (props) => {
+      const dispatch = useDispatch();
+      return (
+        <View>
+          <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
+            <DrawerNavigatorItems {...props} />
+            <Button
+              title="Logout"
+              color={Colors.primary}
+              onPress={() => {
+                dispatch(logout());
+                props.navigation.navigate('Auth');
+              }}
+            />
+          </SafeAreaView>
+        </View>
+      );
+    },
   }
 );
 
-const AuthNavigator = createStackNavigator({
-  Auth: AuthScreen
-}, {
-  defaultNavigationOptions: defaultNavOptions
-});
+const AuthNavigator = createStackNavigator(
+  {
+    Auth: AuthScreen,
+  },
+  {
+    defaultNavigationOptions: defaultNavOptions,
+  }
+);
 
 const MainNavigator = createSwitchNavigator({
+  Startup: StartupScreen,
   Auth: AuthNavigator,
-  Shop: ShopNavigator
+  Shop: ShopNavigator,
 });
 
 export default createAppContainer(MainNavigator);

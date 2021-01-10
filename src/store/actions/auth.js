@@ -1,5 +1,40 @@
-export const SIGNUP = 'Signup';
-export const LOGIN = 'Login';
+import AsyncStorage from "@react-native-community/async-storage";
+export const AUTHENTICATE = 'Authenticate';
+export const LOGOUT = 'Logout';
+
+let timer;
+
+const saveDataToStorage = (token, userId, expirationDate) => {
+    AsyncStorage.setItem('userData', JSON.stringify({ token, userId, expiryDate: expirationDate.toISOString() }));
+}
+
+export const authenticate = (userId, token, expiryTime) => {
+    return dispatch => {
+        dispatch(setLogoutTimer(expiryTime));
+        dispatch({
+            type: AUTHENTICATE,
+            userId,
+            token
+        });
+    }
+}
+const clearLogoutTimer = () => {
+    if (timer) clearTimeout(timer);
+}
+
+export const logout = () => {
+    clearLogoutTimer();
+    AsyncStorage.removeItem('userData');
+    return { type: LOGOUT };
+}
+
+const setLogoutTimer = (expirationTime) => {
+    return dispatch => {
+        timer = setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime / 1000);
+    }
+}
 
 export const signup = (email, password) => {
     return async dispatch => {
@@ -20,7 +55,9 @@ export const signup = (email, password) => {
             throw new Error(message);
         }
         const responseData = await response.json();
-        dispatch({ type: SIGNUP, token: responseData.idToken, userId: responseData.localId });
+        dispatch(authenticate(responseData.localId, responseData.token, parseInt(responseData.expiresIn) * 1000));
+        const expirationDate = new Date(new Date().getTime() + parseInt(responseData.expiresIn) * 1000);
+        saveDataToStorage(responseData.idToken, responseData.localId, expirationDate);
     }
 }
 export const login = (email, password) => {
@@ -44,6 +81,8 @@ export const login = (email, password) => {
             throw new Error(message);
         }
         const responseData = await response.json();
-        dispatch({ type: LOGIN, token: responseData.idToken, userId: responseData.localId });
+        dispatch(authenticate(responseData.localId, responseData.token, parseInt(responseData.expiresIn) * 1000));
+        const expirationDate = new Date(new Date().getTime() + parseInt(responseData.expiresIn) * 1000);
+        saveDataToStorage(responseData.idToken, responseData.localId, expirationDate);
     }
 }
