@@ -34,7 +34,7 @@ const CartScreen = () => {
     setIsLoading(true);
     await dispatch(addOrder(cartItems, cartTotalAmount));
     setIsLoading(false);
-  }, [dispatch, setIsLoading]);
+  }, [dispatch, setIsLoading, cartItems, cartTotalAmount]);
 
   
 

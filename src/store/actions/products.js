@@ -6,9 +6,10 @@ export const UPDATE_PRODUCT = "Update Product";
 export const GET_PRODUCTS = "Get Products";
 
 export const deleteProduct = (productId) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+      const token = getState().auth.token;
         await fetch(
-            `https://native-shop-app-8033b-default-rtdb.firebaseio.com/products/${productId}.json`,
+            `https://native-shop-app-8033b-default-rtdb.firebaseio.com/products/${productId}.json?auth=${token}`,
             {
               method: "DELETE",
               headers: {
@@ -24,8 +25,9 @@ export const deleteProduct = (productId) => {
 };
 
 export const fetchProducts = (onSuccess, onFailure) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
       try {
+        const userId = getState().auth.userId;
           const response = await fetch(
             "https://native-shop-app-8033b-default-rtdb.firebaseio.com/products.json"
           );
@@ -36,7 +38,7 @@ export const fetchProducts = (onSuccess, onFailure) => {
             loadedProducts.push(
               new Product(
                 key,
-                "u1",
+                responseData[key].ownerId,
                 responseData[key].title,
                 responseData[key].imageUrl,
                 responseData[key].description,
@@ -46,7 +48,8 @@ export const fetchProducts = (onSuccess, onFailure) => {
           }
           dispatch({
               type: GET_PRODUCTS,
-              products: loadedProducts
+              products: loadedProducts,
+              userProducts: loadedProducts.filter(p => p.ownerId === userId)
           });
           onSuccess();
       } catch (error) {
@@ -56,16 +59,17 @@ export const fetchProducts = (onSuccess, onFailure) => {
 };
 
 export const createProduct = (title, imageUrl, price, description) => {
-  return async (dispatch) => {
-      try {        
+  return async (dispatch, getState) => {
+      try { 
+        const {token, userId} = getState().auth;       
           const response = await fetch(
-            "https://native-shop-app-8033b-default-rtdb.firebaseio.com/products.json",
+            `https://native-shop-app-8033b-default-rtdb.firebaseio.com/products.json?auth=${token}`,
             {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ title, imageUrl, price, description }),
+              body: JSON.stringify({ title, imageUrl, price, description, ownerId: userId }),
             }
           );
           if (!response.ok) throw new Error('Something went wrong');
@@ -78,6 +82,7 @@ export const createProduct = (title, imageUrl, price, description) => {
               imageUrl,
               price,
               description,
+              ownerId: userId
             },
           });
       } catch (error) {
@@ -87,10 +92,11 @@ export const createProduct = (title, imageUrl, price, description) => {
 };
 
 export const updateProduct = (id, title, imageUrl, description) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {           
+          const token = getState().auth.token;
             const response  = await fetch(
-                `https://native-shop-app-8033b-default-rtdb.firebaseio.com/products/${id}.json`,
+                `https://native-shop-app-8033b-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
                 {
                   method: "PATCH",
                   headers: {

@@ -9,6 +9,7 @@ import ShopNavigator from "./src/navigations/ShopNavigator";
 import productsReducer from "./src/store/reducers/products";
 import cartReducer from "./src/store/reducers/cart";
 import ordersReducer from "./src/store/reducers/orders";
+import authReducer from "./src/store/reducers/auth";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
   orders: ordersReducer,
+  auth: authReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

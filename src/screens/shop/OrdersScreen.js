@@ -1,6 +1,6 @@
 import React from "react";
 import { useCallback } from "react";
-import { StyleSheet, FlatList, View, ActivityIndicator, Platform } from "react-native";
+import { StyleSheet, FlatList, View, ActivityIndicator, Platform, Text } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react/cjs/react.development";
@@ -25,6 +25,13 @@ const OrdersScreen = () => {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+  if (orders.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>No Orders found, may be try ordering some?</Text>
       </View>
     );
   }
